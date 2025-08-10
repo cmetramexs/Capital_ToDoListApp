@@ -1,11 +1,10 @@
-package test.main.java.com.taskmanager.service;
+package com.taskmanager.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.taskmanager.controller.TaskController;
 import com.taskmanager.model.Task;
-import com.taskmanager.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

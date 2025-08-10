@@ -1,29 +1,24 @@
-package test.java.com.taskmanager.controller;
+package com.taskmanager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.taskmanager.controller.TaskController;
 import com.taskmanager.model.Task;
 import com.taskmanager.service.TaskService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.*;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 @WebMvcTest(TaskController.class)
 class TaskControllerTest {
@@ -90,68 +85,68 @@ class TaskControllerTest {
     @Test
     void getAllTasks_ShouldReturnTaskList() throws Exception {
         // Arrange
-        when(taskService.getAllTasks()).thenReturn(testTasks);
+        Mockito.when(taskService.getAllTasks()).thenReturn(testTasks);
 
         // Act & Assert
-        mockMvc.perform(get("/tasks"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(2)))
-            .andExpect(jsonPath("$[0].id", is(1)))
-            .andExpect(jsonPath("$[0].title", is("Parent Task")))
-            .andExpect(jsonPath("$[0].priority", is("HIGH")))
-            .andExpect(jsonPath("$[0].category", is("WORK")))
-            .andExpect(jsonPath("$[0].status", is("PENDING")))
-            .andExpect(jsonPath("$[1].id", is(3)))
-            .andExpect(jsonPath("$[1].title", is("Test Task")))
-            .andExpect(jsonPath("$[1].priority", is("LOW")));
+        mockMvc.perform(MockMvcRequestBuilders.get("/tasks"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.is(1)))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].title", Matchers.is("Parent Task")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].priority", Matchers.is("HIGH")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].category", Matchers.is("WORK")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].status", Matchers.is("PENDING")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].id", Matchers.is(3)))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].title", Matchers.is("Test Task")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].priority", Matchers.is("LOW")));
 
-        verify(taskService, times(1)).getAllTasks();
+        Mockito.verify(taskService, Mockito.times(1)).getAllTasks();
     }
 
     @Test
     void getAllTasks_ShouldReturnEmptyList_WhenNoTasks() throws Exception {
         // Arrange
-        when(taskService.getAllTasks()).thenReturn(Collections.emptyList());
+        Mockito.when(taskService.getAllTasks()).thenReturn(Collections.emptyList());
 
         // Act & Assert
-        mockMvc.perform(get("/tasks"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", hasSize(0)));
+        mockMvc.perform(MockMvcRequestBuilders.get("/tasks"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(0)));
 
-        verify(taskService, times(1)).getAllTasks();
+        Mockito.verify(taskService, Mockito.times(1)).getAllTasks();
     }
 
     @Test
     void getTaskById_ShouldReturnTask_WhenTaskExists() throws Exception {
         // Arrange
-        when(taskService.getTaskById(1L)).thenReturn(Optional.of(parentTask));
+        Mockito.when(taskService.getTaskById(1L)).thenReturn(Optional.of(parentTask));
 
         // Act & Assert
-        mockMvc.perform(get("/tasks/1"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id", is(1)))
-            .andExpect(jsonPath("$.title", is("Parent Task")))
-            .andExpect(jsonPath("$.description", is("Parent task description")))
-            .andExpect(jsonPath("$.priority", is("HIGH")))
-            .andExpect(jsonPath("$.category", is("WORK")))
-            .andExpect(jsonPath("$.status", is("PENDING")));
+        mockMvc.perform(MockMvcRequestBuilders.get("/tasks/1"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("Parent Task")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.description", Matchers.is("Parent task description")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.priority", Matchers.is("HIGH")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.category", Matchers.is("WORK")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status", Matchers.is("PENDING")));
 
-        verify(taskService, times(1)).getTaskById(1L);
+        Mockito.verify(taskService, Mockito.times(1)).getTaskById(1L);
     }
 
     @Test
     void getTaskById_ShouldReturnNotFound_WhenTaskDoesNotExist() throws Exception {
         // Arrange
-        when(taskService.getTaskById(999L)).thenReturn(Optional.empty());
+        Mockito.when(taskService.getTaskById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        mockMvc.perform(get("/tasks/999"))
-            .andExpect(status().isNotFound());
+        mockMvc.perform(MockMvcRequestBuilders.get("/tasks/999"))
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
 
-        verify(taskService, times(1)).getTaskById(999L);
+        Mockito.verify(taskService, Mockito.times(1)).getTaskById(999L);
     }
 
     @Test
@@ -172,21 +167,21 @@ class TaskControllerTest {
         createdTask.setCategory(Task.Category.PERSONAL);
         createdTask.setStatus(Task.Status.PENDING);
 
-        when(taskService.createTask(any(Task.class))).thenReturn(createdTask);
+        Mockito.when(taskService.createTask(ArgumentMatchers.any(Task.class))).thenReturn(createdTask);
 
         // Act & Assert
-        mockMvc.perform(post("/tasks")
+        mockMvc.perform(MockMvcRequestBuilders.post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newTask)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id", is(4)))
-            .andExpect(jsonPath("$.title", is("New Task")))
-            .andExpect(jsonPath("$.description", is("New Description")))
-            .andExpect(jsonPath("$.priority", is("MEDIUM")))
-            .andExpect(jsonPath("$.category", is("PERSONAL")))
-            .andExpect(jsonPath("$.status", is("PENDING")));
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(4)))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("New Task")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.description", Matchers.is("New Description")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.priority", Matchers.is("MEDIUM")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.category", Matchers.is("PERSONAL")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status", Matchers.is("PENDING")));
 
-        verify(taskService, times(1)).createTask(any(Task.class));
+        Mockito.verify(taskService, Mockito.times(1)).createTask(ArgumentMatchers.any(Task.class));
     }
 
     @Test
@@ -197,12 +192,12 @@ class TaskControllerTest {
         invalidTask.setDescription("Description");
 
         // Act & Assert
-        mockMvc.perform(post("/tasks")
+        mockMvc.perform(MockMvcRequestBuilders.post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidTask)))
-            .andExpect(status().isBadRequest());
+            .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        verify(taskService, never()).createTask(any(Task.class));
+        Mockito.verify(taskService, Mockito.never()).createTask(ArgumentMatchers.any(Task.class));
     }
 
     @Test
@@ -213,12 +208,12 @@ class TaskControllerTest {
         invalidTask.setDescription("Description");
 
         // Act & Assert
-        mockMvc.perform(post("/tasks")
+        mockMvc.perform(MockMvcRequestBuilders.post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidTask)))
-            .andExpect(status().isBadRequest());
+            .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        verify(taskService, never()).createTask(any(Task.class));
+        Mockito.verify(taskService, Mockito.never()).createTask(ArgumentMatchers.any(Task.class));
     }
 
     @Test
@@ -239,21 +234,21 @@ class TaskControllerTest {
         updatedTask.setCategory(Task.Category.URGENT);
         updatedTask.setStatus(Task.Status.COMPLETED);
 
-        when(taskService.updateTask(eq(1L), any(Task.class))).thenReturn(updatedTask);
+        Mockito.when(taskService.updateTask(ArgumentMatchers.eq(1L), ArgumentMatchers.any(Task.class))).thenReturn(updatedTask);
 
         // Act & Assert
-        mockMvc.perform(put("/tasks/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateData)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(1)))
-            .andExpect(jsonPath("$.title", is("Updated Task")))
-            .andExpect(jsonPath("$.description", is("Updated Description")))
-            .andExpect(jsonPath("$.priority", is("URGENT")))
-            .andExpect(jsonPath("$.category", is("URGENT")))
-            .andExpect(jsonPath("$.status", is("COMPLETED")));
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("Updated Task")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.description", Matchers.is("Updated Description")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.priority", Matchers.is("URGENT")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.category", Matchers.is("URGENT")))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status", Matchers.is("COMPLETED")));
 
-        verify(taskService, times(1)).updateTask(eq(1L), any(Task.class));
+        Mockito.verify(taskService, Mockito.times(1)).updateTask(ArgumentMatchers.eq(1L), ArgumentMatchers.any(Task.class));
     }
 
     @Test
@@ -262,38 +257,38 @@ class TaskControllerTest {
         Task updateData = new Task();
         updateData.setTitle("Updated Task");
 
-        when(taskService.updateTask(eq(999L), any(Task.class))).thenReturn(null);
+        Mockito.when(taskService.updateTask(ArgumentMatchers.eq(999L), ArgumentMatchers.any(Task.class))).thenReturn(null);
 
         // Act & Assert
-        mockMvc.perform(put("/tasks/999")
+        mockMvc.perform(MockMvcRequestBuilders.put("/tasks/999")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateData)))
-            .andExpect(status().isNotFound());
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
 
-        verify(taskService, times(1)).updateTask(eq(999L), any(Task.class));
+        Mockito.verify(taskService, Mockito.times(1)).updateTask(ArgumentMatchers.eq(999L), ArgumentMatchers.any(Task.class));
     }
 
     @Test
     void deleteTask_ShouldReturnNoContent_WhenTaskExists() throws Exception {
         // Arrange
-        when(taskService.deleteTask(1L)).thenReturn(true);
+        Mockito.when(taskService.deleteTask(1L)).thenReturn(true);
 
         // Act & Assert
-        mockMvc.perform(delete("/tasks/1"))
-            .andExpect(status().isNoContent());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/tasks/1"))
+            .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        verify(taskService, times(1)).deleteTask(1L);
+        Mockito.verify(taskService, Mockito.times(1)).deleteTask(1L);
     }
 
     @Test
     void deleteTask_ShouldReturnNotFound_WhenTaskDoesNotExist() throws Exception {
         // Arrange
-        when(taskService.deleteTask(999L)).thenReturn(false);
+        Mockito.when(taskService.deleteTask(999L)).thenReturn(false);
 
         // Act & Assert
-        mockMvc.perform(delete("/tasks/999"))
-            .andExpect(status().isNotFound());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/tasks/999"))
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
 
-        verify(taskService, times(1)).deleteTask(999L);
+        Mockito.verify(taskService, Mockito.times(1)).deleteTask(999L);
     }
 }
